@@ -1,0 +1,52 @@
+modules = ["dotnet"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "NetworkSoftwareManager"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "run_network_software_manager"
+
+[[workflows.workflow]]
+name = "NetworkSoftwareManager"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "dotnet build NetworkSoftwareManager.sln && dotnet run --project NetworkSoftwareManager/NetworkSoftwareManager.csproj"
+waitForPort = 5000
+
+[[workflows.workflow]]
+name = "run_network_software_manager"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "dotnet run --project NetworkSoftwareManager/NetworkSoftwareManager.csproj"
+
+[deployment]
+run = ["sh", "-c", "dotnet build NetworkSoftwareManager.sln && dotnet run --project NetworkSoftwareManager/NetworkSoftwareManager.csproj"]

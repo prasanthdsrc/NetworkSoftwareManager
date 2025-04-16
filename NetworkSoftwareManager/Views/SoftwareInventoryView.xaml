@@ -1,0 +1,237 @@
+<Page x:Class="NetworkSoftwareManager.Views.SoftwareInventoryView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:NetworkSoftwareManager.Views"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:viewmodels="clr-namespace:NetworkSoftwareManager.ViewModels"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="800"
+      Title="Software Inventory">
+
+    <Page.DataContext>
+        <viewmodels:SoftwareInventoryViewModel />
+    </Page.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" 
+                   Text="Software Inventory" 
+                   Style="{StaticResource MaterialDesignHeadline4TextBlock}" 
+                   Margin="16,16,0,8"/>
+
+        <!-- Machine Selection and Actions -->
+        <materialDesign:Card Grid.Row="1" Margin="16,0,16,16">
+            <Grid Margin="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Machine Selection -->
+                <Grid Grid.Row="0" Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Select Machine:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <ComboBox Grid.Column="1" 
+                              ItemsSource="{Binding Machines}" 
+                              SelectedItem="{Binding SelectedMachine}"
+                              DisplayMemberPath="Hostname"
+                              ToolTip="Select a machine to view its software inventory"/>
+                </Grid>
+
+                <!-- Action Buttons -->
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Command="{Binding ScanSoftwareCommand}" 
+                            CommandParameter="{Binding SelectedMachine}"
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+                            ToolTip="Scan Software for Selected Machine"
+                            Margin="0,0,8,0"
+                            IsEnabled="{Binding IsInventoryRunning, Converter={StaticResource InverseBooleanConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Scan" Margin="0,0,8,0"/>
+                            <TextBlock Text="Scan Software"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Command="{Binding ScanAllSoftwareCommand}" 
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            ToolTip="Scan Software for All Machines"
+                            Margin="0,0,8,0"
+                            IsEnabled="{Binding IsInventoryRunning, Converter={StaticResource InverseBooleanConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Sync" Margin="0,0,8,0"/>
+                            <TextBlock Text="Scan All"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Command="{Binding CancelScanCommand}" 
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            ToolTip="Cancel Current Scan"
+                            Visibility="{Binding IsInventoryRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Cancel" Margin="0,0,8,0"/>
+                            <TextBlock Text="Cancel"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!-- Progress Bar and Status -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,8,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <ProgressBar Grid.Column="0" Value="{Binding InventoryProgress}" Height="10" Maximum="100"
+                                    Visibility="{Binding IsInventoryRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        
+                        <TextBlock Grid.Column="1" Margin="8,0,0,0" 
+                                  Text="{Binding InventoryProgress, StringFormat={}{0:0}%}"
+                                  Visibility="{Binding IsInventoryRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </Grid>
+                    
+                    <TextBlock Text="{Binding StatusMessage}" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
+
+        <!-- Software List and Filters -->
+        <Grid Grid.Row="2" Margin="16,0,16,16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Software Filter -->
+            <Grid Grid.Row="0" Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Search Box -->
+                <TextBox Grid.Column="0" 
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
+                         materialDesign:HintAssist.Hint="Search for software..."
+                         materialDesign:TextFieldAssist.HasClearButton="True">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding SearchCommand}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+
+                <!-- Filter Tools -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="16,0,0,0">
+                    <CheckBox Content="Show only updatable" 
+                              IsChecked="{Binding ShowOnlyUpdatable}" 
+                              VerticalAlignment="Center"
+                              Margin="0,0,16,0"/>
+                    
+                    <Button Command="{Binding SearchCommand}" 
+                            Style="{StaticResource MaterialDesignIconButton}"
+                            ToolTip="Search">
+                        <materialDesign:PackIcon Kind="Magnify" Width="24" Height="24"/>
+                    </Button>
+                    
+                    <Button Command="{Binding SelectAllSoftwareCommand}" 
+                            Style="{StaticResource MaterialDesignIconButton}"
+                            ToolTip="Select All">
+                        <materialDesign:PackIcon Kind="SelectAll" Width="24" Height="24"/>
+                    </Button>
+                    
+                    <Button Command="{Binding DeselectAllSoftwareCommand}" 
+                            Style="{StaticResource MaterialDesignIconButton}"
+                            ToolTip="Deselect All">
+                        <materialDesign:PackIcon Kind="SelectionOff" Width="24" Height="24"/>
+                    </Button>
+                    
+                    <Button Command="{Binding RefreshLatestVersionsCommand}" 
+                            Style="{StaticResource MaterialDesignIconButton}"
+                            ToolTip="Refresh Latest Versions">
+                        <materialDesign:PackIcon Kind="Update" Width="24" Height="24"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- Software Data Grid -->
+            <DataGrid Grid.Row="1" 
+                      ItemsSource="{Binding SoftwareList}" 
+                      SelectedItem="{Binding SelectedSoftware}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      IsReadOnly="False">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="Select" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" Width="*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Installed Version" Binding="{Binding InstalledVersion}" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Latest Version" Binding="{Binding LatestVersion}" Width="Auto"/>
+                    <DataGridCheckBoxColumn Header="Use Latest" Binding="{Binding UseLatestVersion}" Width="Auto"/>
+                    <DataGridTextColumn Header="Target Version" Binding="{Binding TargetVersion}" Width="Auto"/>
+                    <DataGridTemplateColumn Header="Update Available" Width="Auto" IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <materialDesign:PackIcon Kind="CheckCircle" 
+                                                        Foreground="Green"
+                                                        VerticalAlignment="Center"
+                                                        Visibility="{Binding UpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Install Location" Binding="{Binding InstallLocation}" Width="*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Install Date" Binding="{Binding InstallDate, StringFormat=\{0:yyyy-MM-dd\}}" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTemplateColumn Width="Auto">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding DataContext.SetLatestVersionCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        ToolTip="Set Latest Version">
+                                    <materialDesign:PackIcon Kind="Tag"/>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <!-- Stats Bar -->
+        <StatusBar Grid.Row="3">
+            <StatusBarItem>
+                <TextBlock>
+                    <Run Text="Software Count:"/>
+                    <Run Text="{Binding SoftwareCount}"/>
+                </TextBlock>
+            </StatusBarItem>
+            <Separator Style="{StaticResource MaterialDesignSeparator}"/>
+            <StatusBarItem>
+                <TextBlock>
+                    <Run Text="Updatable:"/>
+                    <Run Text="{Binding UpdatableSoftwareCount}"/>
+                </TextBlock>
+            </StatusBarItem>
+            <Separator Style="{StaticResource MaterialDesignSeparator}"/>
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusMessage}"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Page>

@@ -1,0 +1,255 @@
+<Page x:Class="NetworkSoftwareManager.Views.NetworkScanView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:NetworkSoftwareManager.Views"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:viewmodels="clr-namespace:NetworkSoftwareManager.ViewModels"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="800"
+      Title="Network Scan">
+
+    <Page.DataContext>
+        <viewmodels:NetworkScanViewModel />
+    </Page.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" 
+                   Text="Network Scan" 
+                   Style="{StaticResource MaterialDesignHeadline4TextBlock}" 
+                   Margin="16,16,0,8"/>
+
+        <!-- Scan Controls -->
+        <materialDesign:Card Grid.Row="1" Margin="16,0,16,16">
+            <Grid Margin="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Scan Parameters -->
+                <Grid Grid.Row="0" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="IP Range:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding IPRangeToScan}" Margin="0,0,16,0"
+                             ToolTip="Enter IP range in format: 192.168.1.1-192.168.1.254"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Excluded IPs:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding ExcludedIPs}" 
+                             ToolTip="Enter comma separated IP addresses to exclude"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Scan Timeout (ms):" VerticalAlignment="Center" Margin="0,8,8,0"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ScanTimeout}" Margin="0,8,16,0"
+                             ToolTip="Timeout in milliseconds for ping responses"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Thread Count:" VerticalAlignment="Center" Margin="0,8,8,0"/>
+                    <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding ThreadCount}" Margin="0,8,0,0"
+                             ToolTip="Number of parallel scanning threads"/>
+                </Grid>
+
+                <!-- Scan Button Group -->
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <Button Command="{Binding ScanNetworkCommand}" 
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+                            ToolTip="Start Network Scan"
+                            Margin="0,0,8,0"
+                            IsEnabled="{Binding IsNetworkScanRunning, Converter={StaticResource InverseBooleanConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Lan" Margin="0,0,8,0"/>
+                            <TextBlock Text="Scan Network"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Command="{Binding CancelScanCommand}" 
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            ToolTip="Cancel Current Scan"
+                            Visibility="{Binding IsNetworkScanRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Cancel" Margin="0,0,8,0"/>
+                            <TextBlock Text="Cancel"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!-- Progress Bar and Status -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,8,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <ProgressBar Grid.Column="0" Value="{Binding ScanProgress}" Height="10" Maximum="100"
+                                    Visibility="{Binding IsNetworkScanRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        
+                        <TextBlock Grid.Column="1" Margin="8,0,0,0" 
+                                  Text="{Binding ScanProgress, StringFormat={}{0:0}%}"
+                                  Visibility="{Binding IsNetworkScanRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </Grid>
+                    
+                    <TextBlock Text="{Binding StatusMessage}" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
+
+        <!-- Machine List -->
+        <Grid Grid.Row="2" Margin="16,0,16,16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Action Buttons -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
+                <Button Command="{Binding SelectAllCommand}" 
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        ToolTip="Select All Machines"
+                        Margin="0,0,8,0">
+                    <TextBlock Text="Select All"/>
+                </Button>
+                
+                <Button Command="{Binding DeselectAllCommand}" 
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        ToolTip="Deselect All Machines"
+                        Margin="0,0,8,0">
+                    <TextBlock Text="Deselect All"/>
+                </Button>
+                
+                <Button Command="{Binding SaveSelectedCommand}" 
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        ToolTip="Save Selected Machines"
+                        Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ContentSave" Margin="0,0,8,0"/>
+                        <TextBlock Text="Save Selected"/>
+                    </StackPanel>
+                </Button>
+                
+                <Button Command="{Binding RemoveSelectedCommand}" 
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        ToolTip="Remove Selected Machines"
+                        Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Delete" Margin="0,0,8,0"/>
+                        <TextBlock Text="Remove Selected"/>
+                    </StackPanel>
+                </Button>
+                
+                <Button Command="{Binding ImportMachinesCommand}" 
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        ToolTip="Import Machines from File"
+                        Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Import" Margin="0,0,8,0"/>
+                        <TextBlock Text="Import"/>
+                    </StackPanel>
+                </Button>
+                
+                <Button Command="{Binding ExportMachinesCommand}" 
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        ToolTip="Export Machines to File">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Export" Margin="0,0,8,0"/>
+                        <TextBlock Text="Export"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <!-- Machine Data Grid -->
+            <DataGrid Grid.Row="1" 
+                      ItemsSource="{Binding Machines}" 
+                      SelectedItem="{Binding SelectedMachine}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      IsReadOnly="False">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="Select" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
+                    <DataGridTextColumn Header="Hostname" Binding="{Binding Hostname}" Width="*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="IP Address" Binding="{Binding IPAddress}" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="OS" Binding="{Binding OperatingSystem}" Width="*" IsReadOnly="True"/>
+                    <DataGridTemplateColumn Header="Status" Width="Auto" IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="CheckCircle" 
+                                                            Foreground="Green"
+                                                            VerticalAlignment="Center"
+                                                            Visibility="{Binding IsOnline, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    <materialDesign:PackIcon Kind="CloseCircle" 
+                                                            Foreground="Red"
+                                                            VerticalAlignment="Center"
+                                                            Visibility="{Binding IsOnline, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                    <TextBlock Text="{Binding IsOnline, Converter={StaticResource BooleanToOnlineStatusConverter}}" 
+                                              Margin="4,0,0,0" 
+                                              VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Last Scanned" Binding="{Binding LastScanned, StringFormat=\{0:yyyy-MM-dd HH:mm\}}" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Software" Binding="{Binding SoftwareCount}" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Updates" Binding="{Binding PendingUpdates}" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Domain" Binding="{Binding Domain}" Width="Auto"/>
+                    <DataGridTextColumn Header="Username" Binding="{Binding Username}" Width="Auto"/>
+                    <DataGridTemplateColumn Header="Password" Width="Auto">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <PasswordBox x:Name="MachinePasswordBox" 
+                                            materialDesign:HintAssist.Hint="Machine Password"
+                                            Loaded="PasswordBox_Loaded"
+                                            PasswordChanged="PasswordBox_PasswordChanged"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Status Message" Binding="{Binding Status}" Width="*" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <!-- Stats Bar -->
+        <StatusBar Grid.Row="3">
+            <StatusBarItem>
+                <TextBlock>
+                    <Run Text="Machines Found:"/>
+                    <Run Text="{Binding MachinesFound}"/>
+                </TextBlock>
+            </StatusBarItem>
+            <Separator Style="{StaticResource MaterialDesignSeparator}"/>
+            <StatusBarItem>
+                <TextBlock>
+                    <Run Text="Online:"/>
+                    <Run Text="{Binding MachinesOnline}"/>
+                </TextBlock>
+            </StatusBarItem>
+            <Separator Style="{StaticResource MaterialDesignSeparator}"/>
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusMessage}"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Page>
