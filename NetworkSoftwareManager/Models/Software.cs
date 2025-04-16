@@ -9,6 +9,8 @@ namespace NetworkSoftwareManager.Models
     /// </summary>
     public class Software : INotifyPropertyChanged
     {
+        private int _id;
+        private int _machineId;
         private string _name = string.Empty;
         private string _publisher = string.Empty;
         private string _installedVersion = string.Empty;
@@ -21,6 +23,58 @@ namespace NetworkSoftwareManager.Models
         private int _installCount;
         private string _targetVersion = string.Empty;
         private bool _useLatestVersion = true;
+        private DateTime _lastCheckedDate = DateTime.Now;
+        private string _installType = string.Empty;
+        private bool _isSystemComponent;
+        private Machine? _machine;
+        
+        /// <summary>
+        /// Gets or sets the unique identifier.
+        /// </summary>
+        public int Id
+        {
+            get => _id;
+            set
+            {
+                if (_id != value)
+                {
+                    _id = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Gets or sets the machine ID.
+        /// </summary>
+        public int MachineId
+        {
+            get => _machineId;
+            set
+            {
+                if (_machineId != value)
+                {
+                    _machineId = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Gets or sets the machine this software is installed on.
+        /// </summary>
+        public Machine? Machine
+        {
+            get => _machine;
+            set
+            {
+                if (_machine != value)
+                {
+                    _machine = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public string Name
         {

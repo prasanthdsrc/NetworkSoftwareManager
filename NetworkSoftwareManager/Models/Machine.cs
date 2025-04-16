@@ -10,9 +10,11 @@ namespace NetworkSoftwareManager.Models
     /// </summary>
     public class Machine : INotifyPropertyChanged
     {
+        private int _id;
         private string _ipAddress = string.Empty;
         private string _hostname = string.Empty;
         private string _operatingSystem = string.Empty;
+        private string _osVersion = string.Empty;
         private bool _isOnline;
         private bool _isSelected;
         private DateTime _lastScanned;
@@ -22,6 +24,26 @@ namespace NetworkSoftwareManager.Models
         private string _status = string.Empty;
         private List<Software> _installedSoftware = new();
         private int _pendingUpdates;
+        private int _pendingOsUpdates;
+        private DateTime _firstDiscovered = DateTime.Now;
+        private int _userCount;
+        private string _lastLoggedInUser = string.Empty;
+        
+        /// <summary>
+        /// Gets or sets the unique identifier (primary key).
+        /// </summary>
+        public int Id
+        {
+            get => _id;
+            set
+            {
+                if (_id != value)
+                {
+                    _id = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public string IPAddress
         {
@@ -178,6 +200,86 @@ namespace NetworkSoftwareManager.Models
                 if (_pendingUpdates != value)
                 {
                     _pendingUpdates = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Gets or sets the count of pending OS updates.
+        /// </summary>
+        public int PendingOSUpdates
+        {
+            get => _pendingOsUpdates;
+            set
+            {
+                if (_pendingOsUpdates != value)
+                {
+                    _pendingOsUpdates = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Gets or sets the date the machine was first discovered.
+        /// </summary>
+        public DateTime FirstDiscovered
+        {
+            get => _firstDiscovered;
+            set
+            {
+                if (_firstDiscovered != value)
+                {
+                    _firstDiscovered = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Gets or sets the OS version details (build number, etc.).
+        /// </summary>
+        public string OSVersion
+        {
+            get => _osVersion;
+            set
+            {
+                if (_osVersion != value)
+                {
+                    _osVersion = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Gets or sets the current user count on the machine.
+        /// </summary>
+        public int UserCount
+        {
+            get => _userCount;
+            set
+            {
+                if (_userCount != value)
+                {
+                    _userCount = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Gets or sets the last logged in user on the machine.
+        /// </summary>
+        public string LastLoggedInUser
+        {
+            get => _lastLoggedInUser;
+            set
+            {
+                if (_lastLoggedInUser != value)
+                {
+                    _lastLoggedInUser = value;
                     OnPropertyChanged();
                 }
             }

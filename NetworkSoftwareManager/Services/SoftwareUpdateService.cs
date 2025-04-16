@@ -106,7 +106,7 @@ namespace NetworkSoftwareManager.Services
                 var updates = GetRecentUpdates();
                 
                 // Remove the update task
-                updates.RemoveAll(u => u.Id == updateId);
+                updates.RemoveAll(u => u.TaskId == updateId);
                 
                 // Save updates
                 SaveUpdates(updates);
@@ -221,18 +221,21 @@ namespace NetworkSoftwareManager.Services
                                 // Update counts
                                 if (success)
                                 {
-                                    Interlocked.Increment(ref update.SuccessCount);
+                                    int newSuccessCount = update.SuccessCount + 1;
+                                    update.SuccessCount = newSuccessCount;
                                 }
                                 else
                                 {
-                                    Interlocked.Increment(ref update.FailureCount);
+                                    int newFailureCount = update.FailureCount + 1;
+                                    update.FailureCount = newFailureCount;
                                 }
                             }
                             catch (Exception ex)
                             {
                                 // Log the error
                                 machine.Status = $"Update failed: {ex.Message}";
-                                Interlocked.Increment(ref update.FailureCount);
+                                int newFailureCount = update.FailureCount + 1;
+                                update.FailureCount = newFailureCount;
                             }
                             finally
                             {
@@ -322,7 +325,10 @@ namespace NetworkSoftwareManager.Services
                 credentials.GetFormattedCredentials());
             
             connectionInfo.AuthenticationMechanism = AuthenticationMechanism.Default;
-            connectionInfo.OperationTimeout = TimeSpan.FromMilliseconds(_settingsService.CurrentSettings.ConnectionTimeout);
+            
+            // Use connection timeout from settings (in milliseconds)
+            int timeoutMs = _settingsService.CurrentSettings.ConnectionTimeout;
+            connectionInfo.OperationTimeout = TimeSpan.FromMilliseconds(timeoutMs);
             
             using (var runspace = RunspaceFactory.CreateRunspace(connectionInfo))
             {

@@ -49,7 +49,7 @@ namespace NetworkSoftwareManager.Services
         public async Task<List<Machine>> ScanNetworkAsync(
             List<IPRange> ipRanges, 
             List<string> excludedIPs, 
-            int timeout,
+            TimeSpan timeout,
             int threadCount)
         {
             // Create a new cancellation token source
@@ -145,7 +145,7 @@ namespace NetworkSoftwareManager.Services
         /// <summary>
         /// Scans a single machine for basic information.
         /// </summary>
-        private async Task<Machine?> ScanSingleMachineAsync(string ipAddress, int timeout, CancellationToken cancellationToken)
+        private async Task<Machine?> ScanSingleMachineAsync(string ipAddress, TimeSpan timeout, CancellationToken cancellationToken)
         {
             // Create a ping object
             using (var ping = new Ping())
@@ -153,7 +153,7 @@ namespace NetworkSoftwareManager.Services
                 try
                 {
                     // Ping the machine
-                    var reply = await ping.SendPingAsync(ipAddress, timeout);
+                    var reply = await ping.SendPingAsync(ipAddress, (int)timeout.TotalMilliseconds);
                     
                     // If the ping was successful, create a machine object
                     if (reply.Status == IPStatus.Success)

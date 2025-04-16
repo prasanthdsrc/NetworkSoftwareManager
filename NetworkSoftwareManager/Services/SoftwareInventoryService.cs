@@ -140,7 +140,10 @@ namespace NetworkSoftwareManager.Services
                 credentials.GetFormattedCredentials());
             
             connectionInfo.AuthenticationMechanism = AuthenticationMechanism.Default;
-            connectionInfo.OperationTimeout = TimeSpan.FromMilliseconds(_settingsService.CurrentSettings.ConnectionTimeout);
+            
+            // Use connection timeout from settings (in milliseconds)
+            int timeoutMs = _settingsService.CurrentSettings.ConnectionTimeout;
+            connectionInfo.OperationTimeout = TimeSpan.FromMilliseconds(timeoutMs);
             
             using (var runspace = RunspaceFactory.CreateRunspace(connectionInfo))
             {
@@ -235,10 +238,11 @@ namespace NetworkSoftwareManager.Services
             try
             {
                 // Create connection options
-                var connectionOptions = new ConnectionOptions
-                {
-                    Timeout = TimeSpan.FromMilliseconds(_settingsService.CurrentSettings.ConnectionTimeout)
-                };
+                var connectionOptions = new ConnectionOptions();
+                
+                // Use connection timeout from settings (in milliseconds)
+                int timeoutMs = _settingsService.CurrentSettings.ConnectionTimeout;
+                connectionOptions.Timeout = TimeSpan.FromMilliseconds(timeoutMs);
                 
                 // Set credentials if available
                 if (!string.IsNullOrEmpty(credentials.Username))

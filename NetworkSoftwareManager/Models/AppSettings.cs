@@ -13,8 +13,8 @@ namespace NetworkSoftwareManager.Models
         private Credentials _globalCredentials = new();
         private string _updateStagingDirectory = string.Empty;
         private bool _scanOnStartup;
-        private int _scanTimeout = 500;
-        private int _connectionTimeout = 5000;
+        private TimeSpan _scanTimeout = TimeSpan.FromMilliseconds(500);
+        private TimeSpan _connectionTimeout = TimeSpan.FromMilliseconds(5000);
         private string _ipRangesToScan = string.Empty;
         private List<string> _excludedIPs = new();
         private List<string> _savedMachines = new();
@@ -63,7 +63,7 @@ namespace NetworkSoftwareManager.Models
             }
         }
 
-        public int ScanTimeout
+        public TimeSpan ScanTimeout
         {
             get => _scanTimeout;
             set
@@ -76,7 +76,7 @@ namespace NetworkSoftwareManager.Models
             }
         }
 
-        public int ConnectionTimeout
+        public TimeSpan ConnectionTimeout
         {
             get => _connectionTimeout;
             set
@@ -206,8 +206,8 @@ namespace NetworkSoftwareManager.Models
                     "NetworkSoftwareManager",
                     "Updates"),
                 ScanOnStartup = false,
-                ScanTimeout = 500,
-                ConnectionTimeout = 5000,
+                ScanTimeout = TimeSpan.FromMilliseconds(500),
+                ConnectionTimeout = TimeSpan.FromMilliseconds(5000),
                 IPRangesToScan = "192.168.1.1-192.168.1.254",
                 ExcludedIPs = new List<string>(),
                 SavedMachines = new List<string>(),

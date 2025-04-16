@@ -518,7 +518,7 @@ namespace NetworkSoftwareManager.ViewModels
                 }
                 
                 // Delete the update task
-                _softwareUpdateService.DeleteUpdateTask(update.Id);
+                _softwareUpdateService.DeleteUpdateTask(update.TaskId);
                 
                 StatusMessage = "Update task removed.";
             }

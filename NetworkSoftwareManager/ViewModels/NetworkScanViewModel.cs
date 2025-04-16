@@ -23,7 +23,7 @@ namespace NetworkSoftwareManager.ViewModels
         private Machine? _selectedMachine;
         private string _ipRangeToScan = string.Empty;
         private string _excludedIPs = string.Empty;
-        private int _scanTimeout = 500;
+        private TimeSpan _scanTimeout = TimeSpan.FromMilliseconds(500);
         private int _threadCount = 10;
         private bool _isNetworkScanRunning;
         private double _scanProgress;
@@ -111,7 +111,7 @@ namespace NetworkSoftwareManager.ViewModels
             }
         }
 
-        public int ScanTimeout
+        public TimeSpan ScanTimeout
         {
             get => _scanTimeout;
             set

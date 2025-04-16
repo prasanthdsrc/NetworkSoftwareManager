@@ -146,16 +146,22 @@ namespace NetworkSoftwareManager.ViewModels
         {
             try
             {
-                var dialog = new System.Windows.Forms.FolderBrowserDialog
+                // Using a standard OpenFileDialog with folder selection (OpenFolderDialog isn't available in .NET 6)
+                var dialog = new Microsoft.Win32.OpenFileDialog
                 {
-                    Description = "Select Update Staging Directory",
-                    ShowNewFolderButton = true
+                    Title = "Select Update Staging Directory",
+                    CheckFileExists = false,
+                    CheckPathExists = true,
+                    ValidateNames = false,
+                    FileName = "Folder Selection"
                 };
                 
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (dialog.ShowDialog() == true)
                 {
-                    Settings.UpdateStagingDirectory = dialog.SelectedPath;
-                    StatusMessage = $"Selected directory: {dialog.SelectedPath}";
+                    // Get directory path from the dialog
+                    string path = System.IO.Path.GetDirectoryName(dialog.FileName) ?? string.Empty;
+                    Settings.UpdateStagingDirectory = path;
+                    StatusMessage = $"Selected directory: {path}";
                 }
             }
             catch (Exception ex)
@@ -223,13 +229,13 @@ namespace NetworkSoftwareManager.ViewModels
             }
             
             // Validate timeouts
-            if (Settings.ScanTimeout <= 0)
+            if (Settings.ScanTimeout <= TimeSpan.Zero)
             {
                 StatusMessage = "Scan timeout must be greater than 0.";
                 return false;
             }
             
-            if (Settings.ConnectionTimeout <= 0)
+            if (Settings.ConnectionTimeout <= TimeSpan.Zero)
             {
                 StatusMessage = "Connection timeout must be greater than 0.";
                 return false;

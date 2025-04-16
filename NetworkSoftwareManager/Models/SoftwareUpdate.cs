@@ -10,7 +10,8 @@ namespace NetworkSoftwareManager.Models
     /// </summary>
     public class SoftwareUpdate : INotifyPropertyChanged
     {
-        private string _id = Guid.NewGuid().ToString();
+        private int _id;
+        private string _taskId = Guid.NewGuid().ToString();
         private string _softwareName = string.Empty;
         private string _targetVersion = string.Empty;
         private bool _useLatestVersion;
@@ -26,8 +27,12 @@ namespace NetworkSoftwareManager.Models
         private string _uninstallCommand = string.Empty;
         private bool _forceReinstall;
         private string _publisher = string.Empty;
+        private string _initiatedBy = string.Empty;
+        private bool _requiresManualApproval = true;
+        private DateTime? _approvedDate;
+        private string _approvedBy = string.Empty;
 
-        public string Id
+        public int Id
         {
             get => _id;
             set
@@ -35,6 +40,19 @@ namespace NetworkSoftwareManager.Models
                 if (_id != value)
                 {
                     _id = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        public string TaskId
+        {
+            get => _taskId;
+            set
+            {
+                if (_taskId != value)
+                {
+                    _taskId = value;
                     OnPropertyChanged();
                 }
             }

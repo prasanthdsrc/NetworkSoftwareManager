@@ -110,6 +110,8 @@ namespace NetworkSoftwareManager.Services
                         psCredential);
 
                     connectionInfo.AuthenticationMechanism = AuthenticationMechanism.Default;
+                    
+                    // Set a fixed timeout of 10 seconds for operation
                     connectionInfo.OperationTimeout = TimeSpan.FromSeconds(10);
 
                     // Try to create a runspace with these credentials

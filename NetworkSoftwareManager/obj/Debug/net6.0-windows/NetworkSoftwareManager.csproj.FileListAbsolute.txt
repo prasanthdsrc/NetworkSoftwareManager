@@ -1,0 +1,13 @@
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0-windows/NetworkSoftwareManager.csproj.AssemblyReference.cache
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0-windows/MainWindow.g.cs
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0-windows/Views/DashboardView.g.cs
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0-windows/Views/NetworkScanView.g.cs
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0-windows/Views/SettingsView.g.cs
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0-windows/Views/SoftwareInventoryView.g.cs
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0-windows/Views/SoftwareUpdateView.g.cs
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0-windows/App.g.cs
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0-windows/GeneratedInternalTypeHelper.g.cs
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0-windows/NetworkSoftwareManager_MarkupCompile.cache
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0-windows/NetworkSoftwareManager_MarkupCompile.lref
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0-windows/Views/LoginView.g.cs
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0-windows/Views/UserAdminView.g.cs
