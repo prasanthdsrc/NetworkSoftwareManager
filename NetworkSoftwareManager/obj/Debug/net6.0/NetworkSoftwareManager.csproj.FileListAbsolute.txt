@@ -1,0 +1,6 @@
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0/NetworkSoftwareManager.csproj.AssemblyReference.cache
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0/NetworkSoftwareManager.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0/NetworkSoftwareManager.AssemblyInfoInputs.cache
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0/NetworkSoftwareManager.AssemblyInfo.cs
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0/NetworkSoftwareManager.csproj.CoreCompileInputs.cache
+/home/runner/workspace/NetworkSoftwareManager/obj/Debug/net6.0/NetworkSoftwareManager.sourcelink.json

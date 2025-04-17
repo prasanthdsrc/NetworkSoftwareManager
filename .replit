@@ -1,4 +1,4 @@
-modules = ["dotnet", "dotnet-8.0"]
+modules = ["dotnet", "dotnet-8.0", "dotnet-6.0"]
 
 [nix]
 channel = "stable-24_05"
@@ -18,6 +18,10 @@ args = "NetworkSoftwareManager"
 [[workflows.workflow.tasks]]
 task = "workflow.run"
 args = "run_network_software_manager"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "run_timespan_fix_demo"
 
 [[workflows.workflow]]
 name = "NetworkSoftwareManager"
@@ -47,6 +51,20 @@ task = "packager.installForAll"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "dotnet run --project NetworkSoftwareManager/NetworkSoftwareManager.csproj"
+
+[[workflows.workflow]]
+name = "run_timespan_fix_demo"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "dotnet run --project TimeSpanFixDemo/TimeSpanFixDemo.csproj"
 
 [deployment]
 run = ["sh", "-c", "dotnet build NetworkSoftwareManager.sln && dotnet run --project NetworkSoftwareManager/NetworkSoftwareManager.csproj"]

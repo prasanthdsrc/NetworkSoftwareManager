@@ -16,5 +16,5 @@ TRACE;DEBUG;NET;NET6_0;NETCOREAPP
 250-752517771
 MainWindow.xaml;Views/DashboardView.xaml;Views/LoginView.xaml;Views/NetworkScanView.xaml;Views/SettingsView.xaml;Views/SoftwareInventoryView.xaml;Views/SoftwareUpdateView.xaml;Views/UserAdminView.xaml;
 
-True
+False
 

@@ -1,0 +1,6 @@
+{
+  "ConnectionTimeout": "00:00:30",
+  "DefaultScanInterval": "1.00:00:00",
+  "UptimeCheckInterval": "04:00:00",
+  "RetryInterval": "04:00:00"
+}

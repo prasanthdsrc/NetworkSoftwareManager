@@ -240,10 +240,9 @@ namespace NetworkSoftwareManager.Services
                 // Create connection options
                 var connectionOptions = new ConnectionOptions();
                 
-                // Use connection timeout from settings converted to milliseconds
-                // ConnectionOptions.Timeout takes an integer milliseconds value
-                // Note: TimeSpan needs to be converted to milliseconds for ConnectionOptions.Timeout
-                connectionOptions.Timeout = (int)_settingsService.CurrentSettings.ConnectionTimeout.TotalMilliseconds;
+                // Use connection timeout from settings
+                // ConnectionOptions.Timeout takes a TimeSpan value
+                connectionOptions.Timeout = _settingsService.CurrentSettings.ConnectionTimeout;
                 
                 // Set credentials if available
                 if (!string.IsNullOrEmpty(credentials.Username))
