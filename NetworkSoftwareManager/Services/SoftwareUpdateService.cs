@@ -326,9 +326,9 @@ namespace NetworkSoftwareManager.Services
             
             connectionInfo.AuthenticationMechanism = AuthenticationMechanism.Default;
             
-            // Use connection timeout from settings (in milliseconds)
-            int timeoutMs = _settingsService.CurrentSettings.ConnectionTimeout;
-            connectionInfo.OperationTimeout = TimeSpan.FromMilliseconds(timeoutMs);
+            // Use connection timeout from settings
+            // WSManConnectionInfo.OperationTimeout requires milliseconds as int
+            connectionInfo.OperationTimeout = (int)_settingsService.CurrentSettings.ConnectionTimeout.TotalMilliseconds;
             
             using (var runspace = RunspaceFactory.CreateRunspace(connectionInfo))
             {

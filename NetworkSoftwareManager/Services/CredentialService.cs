@@ -112,7 +112,8 @@ namespace NetworkSoftwareManager.Services
                     connectionInfo.AuthenticationMechanism = AuthenticationMechanism.Default;
                     
                     // Set a fixed timeout of 10 seconds for operation
-                    connectionInfo.OperationTimeout = TimeSpan.FromSeconds(10);
+                    // WSManConnectionInfo.OperationTimeout requires milliseconds as int
+                    connectionInfo.OperationTimeout = (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
 
                     // Try to create a runspace with these credentials
                     using (var runspace = RunspaceFactory.CreateRunspace(connectionInfo))

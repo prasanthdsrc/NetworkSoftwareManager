@@ -185,7 +185,7 @@ namespace NetworkSoftwareManager.Services
                                 // Get OS information
                                 var connectionOptions = new ConnectionOptions
                                 {
-                                    Timeout = TimeSpan.FromMilliseconds(_settingsService.CurrentSettings.ConnectionTimeout)
+                                    Timeout = _settingsService.CurrentSettings.ConnectionTimeout
                                 };
                                 
                                 // Set credentials if available
